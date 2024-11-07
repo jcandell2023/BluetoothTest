@@ -13,6 +13,7 @@ public struct BleManager: Sendable {
     public var statePublisher: @Sendable () -> AnyPublisher<CBManagerState, Never>
     public var currentState: @Sendable () -> CBManagerState
     public var peripheralUpdatesPublisher: @Sendable () -> AnyPublisher<CBPeripheral, Never>
+    public var didConnectPublisher: @Sendable () -> AnyPublisher<CBPeripheral, Never>
     public var startScanning: @Sendable () -> Void
     public var connectToDevice: @Sendable (CBPeripheral) -> Void
     public var disconnectFromDevice: @Sendable (CBPeripheral) -> Void
@@ -43,6 +44,12 @@ extension BleManager {
             )
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+        }
+        
+        didConnectPublisher = {
+            delegate.didConnectSubject
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
         }
         
         startScanning = {

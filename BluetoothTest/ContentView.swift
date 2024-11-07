@@ -20,6 +20,8 @@ struct ContentView: View {
         }
     }
     
+    @Environment(\.navigation) private var navigation
+    
     var body: some View {
         VStack {
             Spacer()
@@ -68,8 +70,10 @@ struct ContentView: View {
         .onReceive(Dependencies.shared.bleManager.peripheralUpdatesPublisher()) { value in
             devices[value.identifier] = value
         }
+        .onReceive(Dependencies.shared.bleManager.didConnectPublisher()) { peripheral in
+            navigation.navigate(.deviceDetail(.init(peripheral: peripheral)))
+        }
         .padding()
-        
     }
 }
 
