@@ -14,7 +14,7 @@ public struct BleManager: Sendable {
     public var currentState: @Sendable () -> CBManagerState
     public var peripheralUpdatesPublisher: @Sendable () -> AnyPublisher<CBPeripheral, Never>
     public var didConnectPublisher: @Sendable () -> AnyPublisher<CBPeripheral, Never>
-    public var startScanning: @Sendable () -> Void
+    public var startScanning: @Sendable ([CBUUID]?) -> Void
     public var connectToDevice: @Sendable (CBPeripheral) -> Void
     public var disconnectFromDevice: @Sendable (CBPeripheral) -> Void
 }
@@ -52,8 +52,8 @@ extension BleManager {
                 .eraseToAnyPublisher()
         }
         
-        startScanning = {
-            centralManager.scanForPeripherals(withServices: [])
+        startScanning = { services in
+            centralManager.scanForPeripherals(withServices: services ?? [])
         }
         
         connectToDevice = { peripheral in

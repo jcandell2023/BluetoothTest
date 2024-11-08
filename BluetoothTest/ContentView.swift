@@ -56,7 +56,7 @@ struct ContentView: View {
                 state = "resetting"
             case .poweredOn:
                 state = "powered on"
-                Dependencies.shared.bleManager.startScanning()
+                Dependencies.shared.bleManager.startScanning([BleConstants.uartServiceCBUUID])
             case .poweredOff:
                 state = "powered off"
             case .unauthorized:
