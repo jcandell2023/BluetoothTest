@@ -12,7 +12,7 @@ struct BluetoothTestApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationContainerView {
-                ContentView()
+                HomeScreenView()
             }
         }
     }

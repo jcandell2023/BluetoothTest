@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreBluetooth
 
-struct PeripheralView: View {
+struct PeripheralScreenView: View {
     let peripheral: Peripheral
     @State private var services: [CBService] = []
     @State private var datas: [String] = []

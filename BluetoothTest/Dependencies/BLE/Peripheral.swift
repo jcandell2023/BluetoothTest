@@ -34,14 +34,12 @@ extension Peripheral {
         
         didDiscoverServicesPublisher = {
             delegate.servicesSubject
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
+                .receiveOnMain()
         }
         
         didDiscoverCharacteristicsPublisher = {
             delegate.didDiscoverCharacteristicsSubject
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
+                .receiveOnMain()
         }
         
         subscribeToCharacteristic = { characteristic in
@@ -56,8 +54,7 @@ extension Peripheral {
                 .map {
                     $0.value
                 }
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
+                .receiveOnMain()
         }
     }
 }

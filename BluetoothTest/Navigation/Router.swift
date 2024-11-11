@@ -10,6 +10,7 @@ import SwiftUI
 
 enum Route: Hashable {
     case deviceDetail(Peripheral)
+    case multipleView([Peripheral])
 }
 
 @Observable
@@ -20,7 +21,9 @@ class Router {
     func destination(for route: Route) -> some View {
         switch route {
         case let .deviceDetail(peripheral):
-            PeripheralView(peripheral: peripheral)
+            PeripheralScreenView(peripheral: peripheral)
+        case let .multipleView(peripherals):
+            MultiplePeripheralsScreenView(peripherals: peripherals)
         }
     }
 }
