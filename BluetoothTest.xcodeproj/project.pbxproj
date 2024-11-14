@@ -19,6 +19,8 @@
 		2D6FB3BF2CE14519003F1F7E /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3BE2CE14519003F1F7E /* String+Extensions.swift */; };
 		2D6FB3C12CE1658E003F1F7E /* DiscoveredPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C02CE1658D003F1F7E /* DiscoveredPeripheral.swift */; };
 		2D6FB3C32CE182AE003F1F7E /* MultiplePeripheralsScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C22CE182AE003F1F7E /* MultiplePeripheralsScreenView.swift */; };
+		2D6FB3C72CE1BB6B003F1F7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C62CE1BB6B003F1F7E /* ContentView.swift */; };
+		2D6FB3C92CE1BD87003F1F7E /* PeripheralModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C82CE1BD87003F1F7E /* PeripheralModel.swift */; };
 		2D7A6E442CD99CF00019D68F /* BluetoothTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A6E432CD99CF00019D68F /* BluetoothTestApp.swift */; };
 		2D7A6E482CD99CF00019D68F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7A6E472CD99CF00019D68F /* Assets.xcassets */; };
 		2D7A6E4B2CD99CF00019D68F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7A6E4A2CD99CF00019D68F /* Preview Assets.xcassets */; };
@@ -58,6 +60,8 @@
 		2D6FB3BE2CE14519003F1F7E /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		2D6FB3C02CE1658D003F1F7E /* DiscoveredPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveredPeripheral.swift; sourceTree = "<group>"; };
 		2D6FB3C22CE182AE003F1F7E /* MultiplePeripheralsScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplePeripheralsScreenView.swift; sourceTree = "<group>"; };
+		2D6FB3C62CE1BB6B003F1F7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2D6FB3C82CE1BD87003F1F7E /* PeripheralModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralModel.swift; sourceTree = "<group>"; };
 		2D7A6E402CD99CF00019D68F /* BluetoothTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7A6E432CD99CF00019D68F /* BluetoothTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothTestApp.swift; sourceTree = "<group>"; };
 		2D7A6E472CD99CF00019D68F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				2D6FB3B82CE139FD003F1F7E /* BleCentralManagerModel.swift */,
+				2D6FB3C82CE1BD87003F1F7E /* PeripheralModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -185,6 +190,7 @@
 				2D6FB3A12CDC5AB9003F1F7E /* Models */,
 				2D7A6E702CD9D7830019D68F /* Dependencies */,
 				2D7A6E432CD99CF00019D68F /* BluetoothTestApp.swift */,
+				2D6FB3C62CE1BB6B003F1F7E /* ContentView.swift */,
 				2D6FB3A22CDC60A5003F1F7E /* Views */,
 				2D7A6E472CD99CF00019D68F /* Assets.xcassets */,
 				2D7A6E492CD99CF00019D68F /* Preview Content */,
@@ -376,7 +382,9 @@
 				2D6FB3BF2CE14519003F1F7E /* String+Extensions.swift in Sources */,
 				2D6FB3C12CE1658E003F1F7E /* DiscoveredPeripheral.swift in Sources */,
 				2D7A6E6F2CD99D1F0019D68F /* BleCentralManager.swift in Sources */,
+				2D6FB3C72CE1BB6B003F1F7E /* ContentView.swift in Sources */,
 				2D6FB3BD2CE13A49003F1F7E /* HomeScreenView.swift in Sources */,
+				2D6FB3C92CE1BD87003F1F7E /* PeripheralModel.swift in Sources */,
 				2D7A6E442CD99CF00019D68F /* BluetoothTestApp.swift in Sources */,
 				2D6FB3B12CDEAE86003F1F7E /* BleConstants.swift in Sources */,
 			);

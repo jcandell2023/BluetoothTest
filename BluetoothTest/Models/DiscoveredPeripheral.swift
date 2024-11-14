@@ -16,7 +16,7 @@ public struct DiscoveredPeripheral {
 
 extension DiscoveredPeripheral {
     public var name: String? {
-        peripheral.value.name
+        peripheral.name
     }
 }
 

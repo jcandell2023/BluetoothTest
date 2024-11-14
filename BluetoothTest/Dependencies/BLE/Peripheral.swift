@@ -10,12 +10,9 @@ import CoreBluetooth
 
 public struct Peripheral {
     let value: CBPeripheral
-    let discoverServices: () -> Void
-    let didDiscoverServicesPublisher: () -> AnyPublisher<[CBService], Never>
-    let discoverCharacteristics: (CBService) -> Void
-    let didDiscoverCharacteristicsPublisher: () -> AnyPublisher<CBService, Never>
-    let subscribeToCharacteristic: (CBCharacteristic) -> Void
-    let characteristicValuePublisher: (CBUUID) -> AnyPublisher<Data?, Never>
+    let discoverServices: ([CBUUID]?) -> AnyPublisher<[CBService], Never>
+    let discoverCharacteristics: ([CBUUID]?, CBService) -> AnyPublisher<[CBCharacteristic], Never>
+    let subscribeToCharacteristic: (CBCharacteristic) -> AnyPublisher<Data, Never>
 }
 
 extension Peripheral {
@@ -24,38 +21,54 @@ extension Peripheral {
         peripheral.delegate = delegate
         value = peripheral
         
-        discoverServices = {
-            peripheral.discoverServices(nil)
+        discoverServices = { services in
+            delegate.didDiscoverServicesSubject
+                .handleEvents(
+                    receiveSubscription: { _ in
+                        peripheral.discoverServices(services)
+                    }
+                )
+                .eraseToAnyPublisher()
         }
         
-        discoverCharacteristics = { serivce in
-            peripheral.discoverCharacteristics(nil, for: serivce)
-        }
-        
-        didDiscoverServicesPublisher = {
-            delegate.servicesSubject
-                .receiveOnMain()
-        }
-        
-        didDiscoverCharacteristicsPublisher = {
+        discoverCharacteristics = { characteristics, service in
             delegate.didDiscoverCharacteristicsSubject
-                .receiveOnMain()
+                .filter {
+                    $0.uuid == service.uuid
+                }
+                .map { $0.characteristics ?? [] }
+                .handleEvents(
+                    receiveSubscription: { _ in
+                        peripheral.discoverCharacteristics(characteristics, for: service)
+                    }
+                )
+                .eraseToAnyPublisher()
         }
         
         subscribeToCharacteristic = { characteristic in
-            peripheral.setNotifyValue(true, for: characteristic)
-        }
-        
-        characteristicValuePublisher = { cbUuid in
             delegate.didUpdateCharacteristicSubject
                 .filter {
-                    cbUuid == $0.uuid
+                    $0.uuid == characteristic.uuid
                 }
-                .map {
-                    $0.value
-                }
-                .receiveOnMain()
+                .compactMap { $0.value }
+                .handleEvents(
+                    receiveSubscription: { _ in
+                        peripheral.setNotifyValue(true, for: characteristic)
+                    },
+                    receiveCancel: {
+                        peripheral.setNotifyValue(false, for: characteristic)
+                    }
+                )
+                .eraseToAnyPublisher()
         }
+    }
+    
+    var name: String? {
+        value.name
+    }
+    
+    var state: CBPeripheralState {
+        value.state
     }
 }
 
@@ -63,7 +76,7 @@ extension Peripheral {
     class Delegate: NSObject, CBPeripheralDelegate {
         var didUpdateNameSubject: PassthroughSubject<String?, Never> = .init()
         var didReadRssiSubject: PassthroughSubject<Double, Never> = .init()
-        var servicesSubject: PassthroughSubject<[CBService], Never> = .init()
+        var didDiscoverServicesSubject: PassthroughSubject<[CBService], Never> = .init()
         var didDiscoverCharacteristicsSubject: PassthroughSubject<CBService, Never> = .init()
         var didUpdateCharacteristicSubject: PassthroughSubject<CBCharacteristic, Never> = .init()
         
@@ -76,11 +89,7 @@ extension Peripheral {
         }
         
         func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
-            servicesSubject.send(peripheral.services ?? [])
-        }
-        
-        func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
-            //servicesSubject.send(peripheral.services ?? [])
+            didDiscoverServicesSubject.send(peripheral.services ?? [])
         }
         
         func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: (any Error)?) {

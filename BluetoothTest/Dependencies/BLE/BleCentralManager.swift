@@ -15,7 +15,7 @@ public struct BleCentralManager: Sendable {
     public var isScanning: @Sendable () -> Bool
     public var startScanning: @Sendable ([CBUUID]?) -> AnyPublisher<DiscoveredPeripheral, Never>
     public var connect: @Sendable (Peripheral) -> AnyPublisher<Peripheral, Error>
-    public var disconnectFromDevice: @Sendable (Peripheral) -> Void
+    public var disconnect: @Sendable (Peripheral) -> Void
 }
 
 extension BleCentralManager {
@@ -75,9 +75,26 @@ extension BleCentralManager {
             .eraseToAnyPublisher()
         }
         
-        disconnectFromDevice = { peripheral in
+        disconnect = { peripheral in
             centralManager.cancelPeripheralConnection(peripheral.value)
         }
+    }
+    
+    public static func mock(
+        currentState: @escaping @Sendable () -> CBManagerState = { .unknown },
+        statePublisher: @escaping @Sendable () -> AnyPublisher<CBManagerState, Never> = {
+            PassthroughSubject<CBManagerState, Never>().eraseToAnyPublisher()
+        },
+        isScanning: @escaping @Sendable () -> Bool = { false },
+        startScanning: @escaping @Sendable ([CBUUID]?) -> AnyPublisher<DiscoveredPeripheral, Never> = { _ in
+            PassthroughSubject<DiscoveredPeripheral, Never>().eraseToAnyPublisher()
+        },
+        connect: @escaping @Sendable (Peripheral) -> AnyPublisher<Peripheral, Error> = { _ in
+            PassthroughSubject<Peripheral, Error>().eraseToAnyPublisher()
+        },
+        disconnect: @escaping @Sendable (Peripheral) -> Void = { _ in }
+    ) -> Self {
+        .init(currentState: currentState, statePublisher: statePublisher, isScanning: isScanning, startScanning: startScanning, connect: connect, disconnect: disconnect)
     }
 }
 

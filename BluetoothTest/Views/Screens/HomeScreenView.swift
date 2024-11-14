@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct HomeScreenView: View {
-    @State private var bleModel = BleCentralManagerModel()
+    @Environment(BleCentralManagerModel.self) private var bleModel
     @Environment(\.navigation) private var navigation
     
     var body: some View {
+        @Bindable var bleModel = bleModel
         VStack {
             if bleModel.isScanning {
                 Button("Stop scanning for devices") {
@@ -23,7 +24,7 @@ struct HomeScreenView: View {
                 }
             }
             Text("Available Devices:")
-            List(bleModel.devicesToDisplay) { device in
+            List(bleModel.peripheralsToDisplay) { device in
                 HStack {
                     Text(device.name ?? "Name not found")
                     Text(device.rssiData, format: .number)

@@ -30,9 +30,9 @@ class BleCentralManagerModel {
     var errorString: String? = nil
     var isScanning: Bool = false
     
-    var discoveredDevices: [UUID: DiscoveredPeripheral] = [:]
-    var devicesToDisplay: [DiscoveredPeripheral] {
-        Array(discoveredDevices.values).filter { $0.name != nil }.sorted {
+    var discoveredPeripherals: [UUID: DiscoveredPeripheral] = [:]
+    var peripheralsToDisplay: [DiscoveredPeripheral] {
+        Array(discoveredPeripherals.values).filter { $0.name != nil }.sorted {
             guard let name2 = $1.name?.lowercased() else { return true }
             guard let name1 = $0.name?.lowercased() else { return false }
             return name1 < name2
@@ -48,24 +48,28 @@ class BleCentralManagerModel {
         stateUpdatesCancellable = manager.statePublisher()
             .receiveOnMain()
             .sink { [weak self] newState in
-                switch newState {
-                case .poweredOn:
-                    self?.errorString = nil
-                    self?.startScan()
-                case .poweredOff:
-                    self?.errorString = "Please turn on bluetooth"
-                case .unauthorized:
-                    self?.errorString = "Please give the app acess to bluetooth to connect"
-                case .resetting:
-                    self?.errorString = "An error occured, please try again"
-                case .unsupported:
-                    self?.errorString = "Your device isn't compatible with the app"
-                case .unknown:
-                    self?.errorString = "Unknown error"
-                @unknown default:
-                    self?.errorString = "Unknown error"
-                }
+                self?.handleCentralStateChange(for: newState)
             }
+    }
+    
+    private func handleCentralStateChange(for newState: CBManagerState) {
+        switch newState {
+        case .poweredOn:
+            errorString = nil
+            startScan()
+        case .poweredOff:
+            errorString = "Please turn on bluetooth"
+        case .unauthorized:
+            errorString = "Please give the app acess to bluetooth to connect"
+        case .resetting:
+            errorString = "An error occured, please try again"
+        case .unsupported:
+            errorString = "Your device isn't compatible with the app"
+        case .unknown:
+            errorString = "Unknown error"
+        @unknown default:
+            errorString = "Unknown error"
+        }
     }
     
     func startScan() {
@@ -76,8 +80,8 @@ class BleCentralManagerModel {
                 return newDict
             })
             .receiveOnMain()
-            .sink { [weak self] discoveredDevices in
-                self?.discoveredDevices = discoveredDevices
+            .sink { [weak self] discoveredPeripherals in
+                self?.discoveredPeripherals = discoveredPeripherals
             }
         isScanning = manager.isScanning()
     }
@@ -114,5 +118,9 @@ class BleCentralManagerModel {
                     self?.connectionCancellable = nil
                 }
             )
+    }
+    
+    func disconnect(_ peripheral: Peripheral) {
+        manager.disconnect(peripheral)
     }
 }
