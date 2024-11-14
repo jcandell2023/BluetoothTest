@@ -29,9 +29,10 @@ struct HomeScreenView: View {
                     Text(device.name ?? "Name not found")
                     Text(device.rssiData, format: .number)
                     Spacer()
-                    Button("Connect") {
+                    Button(device.isTryingToConnect ? "Connecting" : "Connect") {
                         bleModel.connect(device.peripheral)
                     }
+                    .disabled(device.isTryingToConnect)
                 }
             }
         }

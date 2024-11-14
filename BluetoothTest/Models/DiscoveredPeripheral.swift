@@ -12,6 +12,7 @@ public struct DiscoveredPeripheral {
     public let peripheral: Peripheral
     public let advertisementData: [String: Any]
     public var rssiData: Int
+    public var isTryingToConnect = false
 }
 
 extension DiscoveredPeripheral {

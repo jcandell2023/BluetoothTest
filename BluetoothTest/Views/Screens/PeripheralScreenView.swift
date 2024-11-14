@@ -21,14 +21,19 @@ struct PeripheralScreenView: View {
     var body: some View {
         VStack{
             Text(peripheral.value.name ?? "No Name")
-            List(peripheralModel.collectedData, id: \.self) { data in
-                Text(data)
+            List(peripheralModel.collectedData) { data in
+                HStack(alignment: .center) {
+                    Text(data.timeStamp.formatted(date: .numeric, time: .standard))
+                    Text(data.value, format: .number)
+                    Spacer()
+                }
             }
         }
         .onAppear {
             peripheralModel.discoverServices()
         }
         .onDisappear {
+            peripheralModel.unsubscribeFromData()
             bleModel.disconnect(peripheral)
             bleModel.startScan()
         }

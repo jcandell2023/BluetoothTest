@@ -23,7 +23,7 @@ class PeripheralModel {
     
     var services: [CBService] = []
     var characteristics: [CBCharacteristic] = []
-    var collectedData: [String] = []
+    var collectedData: [BleData] = []
     
     init(peripheral: Peripheral) {
         self.peripheral = peripheral
@@ -55,12 +55,14 @@ class PeripheralModel {
     
     func subscribeToData(for characteristic: CBCharacteristic) {
         dataCancellable = peripheral.subscribeToCharacteristic(characteristic)
-            .map { String(decoding: $0, as: UTF8.self) }
-            .scan([], { list, nextData in
-                list + [nextData]
-            })
-            .sink { dataArray in
-                self.collectedData = dataArray
+            .map { BleData(from: String(decoding: $0, as: UTF8.self)) }
+            .receiveOnMain()
+            .sink { [weak self] newData in
+                self?.collectedData.append(newData)
             }
+    }
+    
+    func unsubscribeFromData() {
+        dataCancellable = nil
     }
 }

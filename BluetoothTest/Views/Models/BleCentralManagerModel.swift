@@ -73,15 +73,16 @@ class BleCentralManagerModel {
     }
     
     func startScan() {
+        self.discoveredPeripherals = [:]
         scanCancellable = manager.startScanning([BleConstants.uartServiceCBUUID])
-            .scan([:], { dict, newDevice -> [UUID: DiscoveredPeripheral] in
-                var newDict = dict
-                newDict[newDevice.id] = newDevice
-                return newDict
-            })
             .receiveOnMain()
-            .sink { [weak self] discoveredPeripherals in
-                self?.discoveredPeripherals = discoveredPeripherals
+            .sink { [weak self] newPeripheral in
+                if var curPeripheral = self?.discoveredPeripherals[newPeripheral.id] {
+                    curPeripheral.rssiData = newPeripheral.rssiData
+                    self?.discoveredPeripherals[curPeripheral.id] = curPeripheral
+                } else {
+                    self?.discoveredPeripherals[newPeripheral.id] = newPeripheral
+                }
             }
         isScanning = manager.isScanning()
     }
@@ -92,14 +93,16 @@ class BleCentralManagerModel {
     }
     
     func connect(_ peripheral: Peripheral) {
+        discoveredPeripherals[peripheral.id]?.isTryingToConnect = true
         connectionCancellable = manager.connect(peripheral)
-            .timeout(.seconds(10), scheduler: DispatchQueue.main, customError: nil)
+            .timeout(.seconds(5), scheduler: DispatchQueue.main, customError: nil)
             .map { Result.success($0) }
             .catch { Just(Result.failure($0)) }
             .receiveOnMain()
             .sink (
                 receiveCompletion: { [weak self] _ in
                     self?.errorString = "Timed out trying to connect"
+                    self?.discoveredPeripherals[peripheral.id]?.isTryingToConnect = false
                 },
                 receiveValue: { [weak self] result in
                     switch result {
@@ -115,6 +118,7 @@ class BleCentralManagerModel {
                     case let .failure(error):
                         self?.errorString = error.localizedDescription
                     }
+                    self?.discoveredPeripherals[peripheral.id]?.isTryingToConnect = false
                     self?.connectionCancellable = nil
                 }
             )

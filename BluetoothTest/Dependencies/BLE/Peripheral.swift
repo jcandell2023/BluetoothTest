@@ -6,13 +6,14 @@
 //
 
 import Combine
-import CoreBluetooth
+@preconcurrency import CoreBluetooth
 
-public struct Peripheral {
+public struct Peripheral: Sendable {
     let value: CBPeripheral
-    let discoverServices: ([CBUUID]?) -> AnyPublisher<[CBService], Never>
-    let discoverCharacteristics: ([CBUUID]?, CBService) -> AnyPublisher<[CBCharacteristic], Never>
-    let subscribeToCharacteristic: (CBCharacteristic) -> AnyPublisher<Data, Never>
+    let discoverServices: @Sendable ([CBUUID]?) -> AnyPublisher<[CBService], Never>
+    let discoverCharacteristics: @Sendable ([CBUUID]?, CBService) -> AnyPublisher<[CBCharacteristic], Never>
+    let subscribeToCharacteristic: @Sendable (CBCharacteristic) -> AnyPublisher<Data, Never>
+    let unsubscribeFromCharacteristic: @Sendable (CBCharacteristic) -> Void
 }
 
 extension Peripheral {
@@ -60,6 +61,10 @@ extension Peripheral {
                     }
                 )
                 .eraseToAnyPublisher()
+        }
+        
+        unsubscribeFromCharacteristic = { characteristic in
+            peripheral.setNotifyValue(false, for: characteristic)
         }
     }
     
