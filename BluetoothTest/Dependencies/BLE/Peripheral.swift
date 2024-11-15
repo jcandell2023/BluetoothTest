@@ -8,6 +8,7 @@
 import Combine
 @preconcurrency import CoreBluetooth
 
+// MARK: Peripheral
 public struct Peripheral: Sendable {
     let value: CBPeripheral
     let discoverServices: @Sendable ([CBUUID]?) -> AnyPublisher<[CBService], Never>
@@ -16,6 +17,7 @@ public struct Peripheral: Sendable {
     let unsubscribeFromCharacteristic: @Sendable (CBCharacteristic) -> Void
 }
 
+// MARK: Implementation
 extension Peripheral {
     public init(peripheral: CBPeripheral) {
         let delegate = peripheral.delegate as? Delegate ?? Delegate()
@@ -29,6 +31,7 @@ extension Peripheral {
                         peripheral.discoverServices(services)
                     }
                 )
+                .share()
                 .eraseToAnyPublisher()
         }
         
@@ -43,6 +46,7 @@ extension Peripheral {
                         peripheral.discoverCharacteristics(characteristics, for: service)
                     }
                 )
+                .share()
                 .eraseToAnyPublisher()
         }
         
@@ -60,6 +64,7 @@ extension Peripheral {
                         peripheral.setNotifyValue(false, for: characteristic)
                     }
                 )
+                .share()
                 .eraseToAnyPublisher()
         }
         
@@ -77,6 +82,7 @@ extension Peripheral {
     }
 }
 
+// MARK: Delegate
 extension Peripheral {
     class Delegate: NSObject, CBPeripheralDelegate {
         var didUpdateNameSubject: PassthroughSubject<String?, Never> = .init()
@@ -107,6 +113,24 @@ extension Peripheral {
     }
 }
 
+// MARK: Errors
+extension Peripheral {
+    public enum PeripheralError: LocalizedError, Sendable {
+        case servicesNotFound
+        case characteristicNotFound
+        
+        public var errorDescription: String? {
+            switch self {
+            case .servicesNotFound:
+                "No services found for those identifiers"
+            case .characteristicNotFound:
+                "No characteristics found for those identifiers"
+            }
+        }
+    }
+}
+
+// MARK: Protocols
 extension Peripheral: Identifiable {
     public var id: UUID { value.identifier }
 }

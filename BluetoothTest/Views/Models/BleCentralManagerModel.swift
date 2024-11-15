@@ -74,7 +74,7 @@ class BleCentralManagerModel {
     
     func startScan() {
         self.discoveredPeripherals = [:]
-        scanCancellable = manager.startScanning([BleConstants.uartServiceCBUUID])
+        scanCancellable = manager.startScanning(withServices: [BleConstants.uartServiceCBUUID])
             .receiveOnMain()
             .sink { [weak self] newPeripheral in
                 if var curPeripheral = self?.discoveredPeripherals[newPeripheral.id] {
@@ -94,34 +94,27 @@ class BleCentralManagerModel {
     
     func connect(_ peripheral: Peripheral) {
         discoveredPeripherals[peripheral.id]?.isTryingToConnect = true
-        connectionCancellable = manager.connect(peripheral)
-            .timeout(.seconds(5), scheduler: DispatchQueue.main, customError: nil)
+        connectionCancellable = manager.connect(to: peripheral)
             .map { Result.success($0) }
             .catch { Just(Result.failure($0)) }
             .receiveOnMain()
-            .sink (
-                receiveCompletion: { [weak self] _ in
-                    self?.errorString = "Timed out trying to connect"
-                    self?.discoveredPeripherals[peripheral.id]?.isTryingToConnect = false
-                },
-                receiveValue: { [weak self] result in
-                    switch result {
-                    case let .success(connectedPeripheral):
-                        self?.navigationSubject.send(.deviceDetail(connectedPeripheral))
-                        self?.stopScan()
+            .sink { [weak self] result in
+                switch result {
+                case let .success(connectedPeripheral):
+                    self?.navigationSubject.send(.deviceDetail(connectedPeripheral))
+                    self?.stopScan()
 //                        self?.connectedPeripherals.append(connectedPeripheral)
 //                        if let connectedPeripherals = self?.connectedPeripherals,
 //                           connectedPeripherals.count > 1 {
 //                            self?.navigationSubject.send(.multipleView(connectedPeripherals))
 //                            self?.stopScan()
 //                        }
-                    case let .failure(error):
-                        self?.errorString = error.localizedDescription
-                    }
-                    self?.discoveredPeripherals[peripheral.id]?.isTryingToConnect = false
-                    self?.connectionCancellable = nil
+                case let .failure(error):
+                    self?.errorString = error.localizedDescription
                 }
-            )
+                self?.discoveredPeripherals[peripheral.id]?.isTryingToConnect = false
+                self?.connectionCancellable = nil
+            }
     }
     
     func disconnect(_ peripheral: Peripheral) {

@@ -10,17 +10,16 @@ import CoreBluetooth
 
 struct PeripheralScreenView: View {
     var peripheralModel: PeripheralModel
-    let peripheral: Peripheral
     @Environment(BleCentralManagerModel.self) private var bleModel
+    @State private var errorString: String? = nil
     
     init(peripheral: Peripheral) {
-        self.peripheral = peripheral
         peripheralModel = PeripheralModel(peripheral: peripheral)
     }
     
     var body: some View {
         VStack{
-            Text(peripheral.value.name ?? "No Name")
+            Text(peripheralModel.name ?? "No Name")
             List(peripheralModel.collectedData) { data in
                 HStack(alignment: .center) {
                     Text(data.timeStamp.formatted(date: .numeric, time: .standard))
@@ -29,12 +28,18 @@ struct PeripheralScreenView: View {
                 }
             }
         }
+        .sheet(item: $errorString) { errorString in
+            Text(errorString)
+        }
+        .onChange(of: peripheralModel.errorString) {
+            errorString = peripheralModel.errorString
+        }
         .onAppear {
             peripheralModel.discoverServices()
         }
         .onDisappear {
             peripheralModel.unsubscribeFromData()
-            bleModel.disconnect(peripheral)
+            bleModel.disconnect(peripheralModel.peripheral)
             bleModel.startScan()
         }
     }

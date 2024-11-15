@@ -12,7 +12,9 @@ import Foundation
 @Observable
 class PeripheralModel {
     @ObservationIgnored
-    private var peripheral: Peripheral
+    var peripheral: Peripheral
+    
+    var name: String?
     
     @ObservationIgnored
     private var servicesCancellable: AnyCancellable? = nil
@@ -25,8 +27,11 @@ class PeripheralModel {
     var characteristics: [CBCharacteristic] = []
     var collectedData: [BleData] = []
     
+    var errorString: String? = nil
+    
     init(peripheral: Peripheral) {
         self.peripheral = peripheral
+        name = peripheral.name
     }
     
     func discoverServices() {
@@ -36,6 +41,8 @@ class PeripheralModel {
                 self?.services = services
                 if let uartService = services.first(where: { $0.uuid == BleConstants.uartServiceCBUUID }) {
                     self?.discoverCharacteristics(for: uartService)
+                } else {
+                    self?.errorString = "Couldn't get data from this device try reconnecting"
                 }
                 self?.servicesCancellable = nil
             }
@@ -48,6 +55,8 @@ class PeripheralModel {
                 self?.characteristics = characteristics
                 if let uartRxCharacteristic = characteristics.first(where: { $0.uuid == BleConstants.uartRxCharacteristicCBUUID }) {
                     self?.subscribeToData(for: uartRxCharacteristic)
+                } else {
+                    self?.errorString = "Couldn't get data from this device try reconnecting"
                 }
                 self?.characteristicsCancellable = nil
             }
