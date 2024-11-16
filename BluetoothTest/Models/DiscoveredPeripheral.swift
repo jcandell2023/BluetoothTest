@@ -5,10 +5,9 @@
 //  Created by Jeff Candell on 11/10/24.
 //
 
-import CoreBluetooth
 import Foundation
 
-public struct DiscoveredPeripheral {
+public struct DiscoveredPeripheral: Sendable {
     public let peripheral: Peripheral
     public let advertisementData: [String: Any]
     public var rssiData: Int

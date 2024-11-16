@@ -18,10 +18,12 @@ struct HomeScreenView: View {
                 Button("Stop scanning for devices") {
                     bleModel.stopScan()
                 }
+                .padding(.top)
             } else {
                 Button("Scan for devices") {
                     bleModel.startScan()
                 }
+                .padding(.top)
             }
             Text("Available Devices:")
             List(bleModel.peripheralsToDisplay) { device in

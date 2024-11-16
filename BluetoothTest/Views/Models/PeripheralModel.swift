@@ -7,7 +7,6 @@
 
 import Combine
 import CoreBluetooth
-import Foundation
 
 @Observable
 class PeripheralModel {

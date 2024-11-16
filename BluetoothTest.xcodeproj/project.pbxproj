@@ -22,6 +22,7 @@
 		2D6FB3C72CE1BB6B003F1F7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C62CE1BB6B003F1F7E /* ContentView.swift */; };
 		2D6FB3C92CE1BD87003F1F7E /* PeripheralModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3C82CE1BD87003F1F7E /* PeripheralModel.swift */; };
 		2D6FB3CB2CE59850003F1F7E /* BleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3CA2CE59850003F1F7E /* BleData.swift */; };
+		2D6FB3CE2CE909FB003F1F7E /* CSVFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6FB3CD2CE909FB003F1F7E /* CSVFile.swift */; };
 		2D7A6E442CD99CF00019D68F /* BluetoothTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A6E432CD99CF00019D68F /* BluetoothTestApp.swift */; };
 		2D7A6E482CD99CF00019D68F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7A6E472CD99CF00019D68F /* Assets.xcassets */; };
 		2D7A6E4B2CD99CF00019D68F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7A6E4A2CD99CF00019D68F /* Preview Assets.xcassets */; };
@@ -64,6 +65,7 @@
 		2D6FB3C62CE1BB6B003F1F7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2D6FB3C82CE1BD87003F1F7E /* PeripheralModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralModel.swift; sourceTree = "<group>"; };
 		2D6FB3CA2CE59850003F1F7E /* BleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleData.swift; sourceTree = "<group>"; };
+		2D6FB3CD2CE909FB003F1F7E /* CSVFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFile.swift; sourceTree = "<group>"; };
 		2D7A6E402CD99CF00019D68F /* BluetoothTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7A6E432CD99CF00019D68F /* BluetoothTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothTestApp.swift; sourceTree = "<group>"; };
 		2D7A6E472CD99CF00019D68F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -165,6 +167,14 @@
 			path = Screens;
 			sourceTree = "<group>";
 		};
+		2D6FB3CC2CE909E9003F1F7E /* FileExport */ = {
+			isa = PBXGroup;
+			children = (
+				2D6FB3CD2CE909FB003F1F7E /* CSVFile.swift */,
+			);
+			path = FileExport;
+			sourceTree = "<group>";
+		};
 		2D7A6E372CD99CF00019D68F = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +249,7 @@
 		2D7A6E702CD9D7830019D68F /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				2D6FB3CC2CE909E9003F1F7E /* FileExport */,
 				2D7A6E6D2CD99D100019D68F /* BLE */,
 			);
 			path = Dependencies;
@@ -384,6 +395,7 @@
 				2D6FB3B92CE139FD003F1F7E /* BleCentralManagerModel.swift in Sources */,
 				2D6FB3BF2CE14519003F1F7E /* String+Extensions.swift in Sources */,
 				2D6FB3C12CE1658E003F1F7E /* DiscoveredPeripheral.swift in Sources */,
+				2D6FB3CE2CE909FB003F1F7E /* CSVFile.swift in Sources */,
 				2D7A6E6F2CD99D1F0019D68F /* BleCentralManager.swift in Sources */,
 				2D6FB3C72CE1BB6B003F1F7E /* ContentView.swift in Sources */,
 				2D6FB3CB2CE59850003F1F7E /* BleData.swift in Sources */,

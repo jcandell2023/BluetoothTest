@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreBluetooth
 
 struct PeripheralScreenView: View {
     var peripheralModel: PeripheralModel
@@ -20,6 +19,7 @@ struct PeripheralScreenView: View {
     var body: some View {
         VStack{
             Text(peripheralModel.name ?? "No Name")
+                .font(.headline)
             List(peripheralModel.collectedData) { data in
                 HStack(alignment: .center) {
                     Text(data.timeStamp.formatted(date: .numeric, time: .standard))
@@ -41,6 +41,11 @@ struct PeripheralScreenView: View {
             peripheralModel.unsubscribeFromData()
             bleModel.disconnect(peripheralModel.peripheral)
             bleModel.startScan()
+        }
+        .toolbar {
+            ToolbarItem {
+                ShareLink(item: CSVFile(bleData: peripheralModel.collectedData), preview: .init("ReinCheck-Data.csv"))
+            }
         }
     }
 }
